@@ -60,6 +60,11 @@ var app = (function () {
 		return () => node.removeEventListener(event, handler, options);
 	}
 
+	function attr(node, attribute, value) {
+		if (value == null) node.removeAttribute(attribute);
+		else node.setAttribute(attribute, value);
+	}
+
 	function children(element) {
 		return Array.from(element.childNodes);
 	}
@@ -286,27 +291,72 @@ var app = (function () {
 	const file = "src/App.svelte";
 
 	function create_fragment(ctx) {
-		var h1, t0, t1, t2, t3, p, t4, t5, t6, t7, button, dispose;
+		var section, h1, t0, t1, t2, t3, p0, t4, t5, t6, t7, p1, t8, t9_value = ctx.name.toUpperCase(), t9, t10, p2, t11, t12, t13, p3, t14, t15_value = ctx.age+1, t15, t16, button, t18, div0, label0, t20, input0, t21, div1, label1, t23, input1, dispose;
 
 		return {
 			c: function create() {
+				section = element("section");
 				h1 = element("h1");
 				t0 = text("Hello ");
-				t1 = text(name);
+				t1 = text(ctx.name);
 				t2 = text("!");
 				t3 = space();
-				p = element("p");
+				p0 = element("p");
 				t4 = text("My age is ");
 				t5 = text(ctx.age);
 				t6 = text(".");
 				t7 = space();
+				p1 = element("p");
+				t8 = text("Uppercase name: ");
+				t9 = text(t9_value);
+				t10 = space();
+				p2 = element("p");
+				t11 = text("Uppercase name from labelled statement: ");
+				t12 = text(ctx.uppercaseName);
+				t13 = space();
+				p3 = element("p");
+				t14 = text("Name + 1: ");
+				t15 = text(t15_value);
+				t16 = space();
 				button = element("button");
 				button.textContent = "Change Age";
+				t18 = space();
+				div0 = element("div");
+				label0 = element("label");
+				label0.textContent = "using on:input for 2-way binding…";
+				t20 = space();
+				input0 = element("input");
+				t21 = space();
+				div1 = element("div");
+				label1 = element("label");
+				label1.textContent = "using bind.value for 2-way binding…";
+				t23 = space();
+				input1 = element("input");
 				h1.className = "svelte-1ucbz36";
-				add_location(h1, file, 15, 0, 150);
-				add_location(p, file, 16, 0, 173);
-				add_location(button, file, 17, 0, 197);
-				dispose = listen(button, "click", ctx.incrementAge);
+				add_location(h1, file, 39, 2, 617);
+				add_location(p0, file, 40, 2, 642);
+				add_location(p1, file, 41, 2, 668);
+				add_location(p2, file, 42, 2, 714);
+				add_location(p3, file, 43, 2, 779);
+				add_location(button, file, 45, 2, 807);
+				add_location(label0, file, 49, 4, 938);
+				attr(input0, "type", "text");
+				input0.value = ctx.name;
+				add_location(input0, file, 50, 4, 991);
+				add_location(div0, file, 48, 2, 928);
+				add_location(label1, file, 53, 4, 1070);
+				attr(input1, "type", "text");
+				input1.value = ctx.name;
+				add_location(input1, file, 54, 4, 1125);
+				add_location(div1, file, 52, 2, 1060);
+				section.className = "container";
+				add_location(section, file, 38, 0, 587);
+
+				dispose = [
+					listen(button, "click", ctx.incrementAge),
+					listen(input0, "input", ctx.nameInput),
+					listen(input1, "input", ctx.input1_input_handler)
+				];
 			},
 
 			l: function claim(nodes) {
@@ -314,22 +364,73 @@ var app = (function () {
 			},
 
 			m: function mount(target, anchor) {
-				insert(target, h1, anchor);
+				insert(target, section, anchor);
+				append(section, h1);
 				append(h1, t0);
 				append(h1, t1);
 				append(h1, t2);
-				insert(target, t3, anchor);
-				insert(target, p, anchor);
-				append(p, t4);
-				append(p, t5);
-				append(p, t6);
-				insert(target, t7, anchor);
-				insert(target, button, anchor);
+				append(section, t3);
+				append(section, p0);
+				append(p0, t4);
+				append(p0, t5);
+				append(p0, t6);
+				append(section, t7);
+				append(section, p1);
+				append(p1, t8);
+				append(p1, t9);
+				append(section, t10);
+				append(section, p2);
+				append(p2, t11);
+				append(p2, t12);
+				append(section, t13);
+				append(section, p3);
+				append(p3, t14);
+				append(p3, t15);
+				append(section, t16);
+				append(section, button);
+				append(section, t18);
+				append(section, div0);
+				append(div0, label0);
+				append(div0, t20);
+				append(div0, input0);
+				append(section, t21);
+				append(section, div1);
+				append(div1, label1);
+				append(div1, t23);
+				append(div1, input1);
+
+				input1.value = ctx.name;
 			},
 
 			p: function update(changed, ctx) {
+				if (changed.name) {
+					set_data(t1, ctx.name);
+				}
+
 				if (changed.age) {
 					set_data(t5, ctx.age);
+				}
+
+				if ((changed.name) && t9_value !== (t9_value = ctx.name.toUpperCase())) {
+					set_data(t9, t9_value);
+				}
+
+				if (changed.uppercaseName) {
+					set_data(t12, ctx.uppercaseName);
+				}
+
+				if ((changed.age) && t15_value !== (t15_value = ctx.age+1)) {
+					set_data(t15, t15_value);
+				}
+
+				if (changed.name) {
+					input0.value = ctx.name;
+				}
+
+				if (changed.name && (input1.value !== ctx.name)) input1.value = ctx.name;
+
+				if (changed.name) {
+					input1.value = ctx.name;
 				}
 			},
 
@@ -338,29 +439,51 @@ var app = (function () {
 
 			d: function destroy(detaching) {
 				if (detaching) {
-					detach(h1);
-					detach(t3);
-					detach(p);
-					detach(t7);
-					detach(button);
+					detach(section);
 				}
 
-				dispose();
+				run_all(dispose);
 			}
 		};
 	}
 
-	let name = 'Max';
-
 	function instance($$self, $$props, $$invalidate) {
-		
+		let name = 'Max';
 	  let age = 30;
+
+	  // ------------------------------
+	  // methods
 
 	  function incrementAge() {
 	    $$invalidate('age', age += 1);
 	  }
 
-		return { age, incrementAge };
+	  function nameInput(e) {
+	    $$invalidate('name', name = e.target.value);
+	  }
+
+		function input1_input_handler() {
+			name = this.value;
+			$$invalidate('name', name);
+		}
+
+		let uppercaseName;
+
+		$$self.$$.update = ($$dirty = { name: 1 }) => {
+			if ($$dirty.name) { $$invalidate('uppercaseName', uppercaseName = name.toUpperCase()); }
+			if ($$dirty.name) { if (name === 'Maximillian') {
+	        $$invalidate('age', age = 50);
+	      } }
+		};
+
+		return {
+			name,
+			age,
+			incrementAge,
+			nameInput,
+			uppercaseName,
+			input1_input_handler
+		};
 	}
 
 	class App extends SvelteComponentDev {
