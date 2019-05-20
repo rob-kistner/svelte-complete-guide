@@ -1,5 +1,10 @@
 <script>
-  let name = 'Max';
+  import ContactCard from './ContactCard.svelte'
+
+  let name = '';
+  let jobTitle = '';
+  let jobDescription = '';
+  let image = 'https://upload.wikimedia.org/wikipedia/commons/8/8d/George_Clooney_2016.jpg';
   let age = 30;
 
   // labelled statement
@@ -12,6 +17,8 @@
 
   $: if (name === 'Maximillian') {
     age = 50
+  } else {
+    age = 30
   }
 
   // ------------------------------
@@ -37,21 +44,41 @@
 </style>
 
 <section class="container">
-  <h1>Hello {name}!</h1>
+
+  <h1>Hello {uppercaseName}!</h1>
   <p>My age is {age}.</p>
-  <p>Uppercase name: {name.toUpperCase()}</p>
-  <p>Uppercase name from labelled statement: {uppercaseName}</p>
-  <p>Name + 1: {age+1}</p>
-
-  <button on:click="{incrementAge}">Change Age</button>
-  <!-- <button on:click="{changeName}">Change Name</button> -->
-
+  
+  <button class="danger" on:click="{incrementAge}">Change Age</button>
   <div>
-    <label>using on:input for 2-way binding…</label>
-    <input type="text" value="{name}" on:input="{nameInput}">
+    <label>Your name:</label>
+    <input type="text" value="{name}" bind:value="{name}" placeholder="Your name">
   </div>
   <div>
-    <label>using bind.value for 2-way binding…</label>
-    <input type="text" value="{name}" bind:value="{name}">
+    <label>Your job title:</label>
+    <input type="text" value="{jobTitle}" bind:value="{jobTitle}" placeholder="Your job title">
   </div>
+  <div>
+    <label>Thumbnail Path:</label>
+    <input type="text" size="75" value="{image}" bind:value="{image}" placeholder="Image thumbnail path">
+  </div>
+  <div>
+    <label>Your job description:</label>
+    <textarea cols="30" rows="5" bind:value="{jobDescription}" placeholder="Your job description"></textarea>
+  </div>
+
+  <!--
+    The curly brace with no attribute prefixer is a svelte shortcut:
+    You can just use the variable name without the attribute if they
+    are the same.
+
+    Below, {jobTitle} is the same as jobTitle={jobTitle}
+    -->
+  <ContactCard
+    userName={name}
+    userAge={age}
+    {jobTitle}
+    {jobDescription}
+    userImage={image} 
+    />
+
 </section>
