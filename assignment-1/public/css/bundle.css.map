@@ -1,0 +1,14 @@
+{
+  "version": 3,
+  "file": "bundle.css",
+  "sources": [
+    "../../src/svelte/App.svelte",
+    "../../src/svelte/components/CourseGoal.svelte"
+  ],
+  "sourcesContent": [
+    "<script>\n  import Description from './components/Description.svelte'\n  import CourseGoal from './components/CourseGoal.svelte'\n\n  let text = '';\n  \n  const updateText = () => text = document.querySelector('#course-goal').value\n</script>\n\n<style>\n  .container {\n    max-width: 800px;\n    margin: 0 auto;\n  }\n  input[type='text'] {\n    width: 100%;\n    max-width: 100%;\n  }\n</style>\n\n<!-- page -->\n<CourseGoal text=\"{text}\" />\n\n<form on:submit|preventDefault=\"{updateText}\">\n  <input type=\"text\" id=\"course-goal\">\n</form>\n\n<hr>\n\n<Description />",
+    "<script>\n  export let text;\n\n  $: isImportant = text.includes('!')\n  $: isNotSure = text.includes('?')\n</script>\n\n<style>\n  .important {\n    color: darkred;\n  }\n  .notsure {\n    font-weight: 300;\n    color: #aaa;\n  }\n</style>\n\n<h1\n  class:important=\"{isImportant}\"\n  class:notsure=\"{isNotSure}\"\n  >{text}</h1>"
+  ],
+  "names": [],
+  "mappings": "AAcE,KAAK,CAAC,IAAI,CAAC,MAAM,CAAC,eAAC,CAAC,AAClB,KAAK,CAAE,IAAI,CACX,SAAS,CAAE,IAAI,AACjB,CAAC;ACTD,UAAU,eAAC,CAAC,AACV,KAAK,CAAE,OAAO,AAChB,CAAC,AACD,QAAQ,eAAC,CAAC,AACR,WAAW,CAAE,GAAG,CAChB,KAAK,CAAE,IAAI,AACb,CAAC"
+}
