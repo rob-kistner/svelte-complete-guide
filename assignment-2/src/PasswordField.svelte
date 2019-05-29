@@ -11,18 +11,10 @@
     password = ''
   }
 
-  function removePasswordOld(e)
-  {
-    const idx = e.target.getAttribute('href')
-    passwordsArray.splice(idx, 1)
-    passwordsArray = [...passwordsArray]
-  }
-
   function removePassword(e)
   {
     const idx = e.target.getAttribute('href')
     passwordsArray = passwordsArray.filter( (pw, i) => idx != i )
-    console.log(passwordsArray)
   }
 
 </script>
