@@ -2,6 +2,10 @@
   export let val
   export let placeholder = 'Type in this field and observe console'
   
+  export function empty() {
+    val = ''
+  }
+
   $: console.log(val)
 
   function setValue(e) {
