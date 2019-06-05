@@ -1,19 +1,42 @@
 <script>
-  import Button from "../UI/Button.svelte";
+  import { products } from '../Products/products-store.js'
+  import cartItems from '../Cart/cart-store.js'
+  import Button from "../UI/Button.svelte"
 
-  export let title;
-  export let price;
-  export let id;
+  export let title
+  export let price
+  export let id
 
-  let showDescription = false;
+  let showDescription = false
+  let fetchedProducts = []
+  let description = 'Not available!'
+  
+  products.subscribe(prods => {
+    fetchedProducts = prods
+  })
 
+  /**
+   * These cart manipulation functions are perfectly legitimate
+   * as used here, but you'd usually want to decide where the 
+   * cart logic shown wholly reside within the app and determine
+   * if you want to emit an event to a parent component to 
+   * manage the cart or not.
+   * 
+   * This example shows the first type
+   */
   function displayDescription() {
     showDescription = !showDescription;
+    const unsubscribe = products.subscribe(prods => {
+      const product = prods.find(p => p.id === id)
+      description = product ? product.description : "Not available!"
+    })
+    unsubscribe()
   }
 
   function removeFromCart() {
-    // ...
-    console.log("Removing...");
+    cartItems.update(items => {
+      return items.filter(item => item.id !== id)
+    })
   }
 </script>
 
@@ -46,6 +69,6 @@
   </Button>
   <Button on:click={removeFromCart}>Remove from Cart</Button>
   {#if showDescription}
-    <p>Not available :(</p>
+    <p>{description}</p>
   {/if}
 </li>
