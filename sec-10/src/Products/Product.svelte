@@ -1,28 +1,15 @@
 <script>
-  import cartItems from '../Cart/cart-store.js'
-  import Button from "../UI/Button.svelte"
+  import cartItems from "../Cart/cart-store.js";
+  import Button from "../UI/Button.svelte";
 
-  export let id
-  export let title
-  export let price
-  export let description
+  export let id;
+  export let title;
+  export let price;
+  export let description;
 
   function addToCart() {
-    /**
-     * add item to store cart items
-     * always do this as a new copy
-     * (i.e.: don't mutate directly) 
-     */
-    cartItems.update(oldItems => {
-      return [
-        ...oldItems,
-        {
-          id: id,
-          title: title,
-          price: price
-        }
-      ]
-    })
+    // cartItems.set([]);
+    cartItems.addItem({ id: id, title: title, price: price });
   }
 </script>
 
