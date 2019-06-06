@@ -82,6 +82,29 @@
   .outline.success:active {
     background: #c2ffd1;
   }
+
+  .minimal {
+    background: transparent;
+    color: #cf0056;
+    box-shadow: none;
+    border-color: transparent;
+  }
+
+  .minimal:hover,
+  .minimal:active {
+    background: #ffc7de;
+    box-shadow: none;
+    border-color: transparent;
+  }
+
+  .minimal:disabled,
+  .minimal:disabled:hover,
+  .minimal:disabled:active {
+    background: transparent;
+    color: #ccc;
+    border-color: transparent;
+  }
+
 </style>
 
 

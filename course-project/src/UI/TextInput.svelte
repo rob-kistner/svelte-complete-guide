@@ -11,6 +11,7 @@
   let touched = false
 </script>
 
+
 <style>
   input,
   textarea {
@@ -53,6 +54,7 @@
     margin: 0.25rem 0;
   }
 </style>
+
 
 <div class="form-control">
   <label for={id}>{label}</label>

@@ -1,4 +1,5 @@
 <script>
+  import meetups from './meetups-store.js'
   import { createEventDispatcher } from 'svelte'
   import TextInput from '../UI/TextInput.svelte'
   import Button from '../UI/Button.svelte'
@@ -11,6 +12,21 @@
   let email = ""
   let description = ""
   let imageUrl = ""
+
+  // for editing existing
+  export let id = null
+  if (id) {
+    const unsubscribe = meetups.subscribe(items => {
+      const selectedMeetup = items.find(i => i.id === id)
+      title = selectedMeetup.title
+      subtitle = selectedMeetup.subtitle
+      address = selectedMeetup.address
+      email = selectedMeetup.contactEmail
+      description = selectedMeetup.description
+      imageUrl = selectedMeetup.imageUrl
+    })
+    unsubscribe() // cleaup immediately after setting vars
+  }
 
   const dispatch = createEventDispatcher()
 
@@ -29,14 +45,26 @@
   
   function submitForm ()
   {
-    dispatch('save', {
+    const meetupData = {
       title: title,
       subtitle: subtitle,
-      address: address,
-      email: email,
       description: description,
-      imageUrl: imageUrl
-    })
+      imageUrl: imageUrl,
+      contactEmail: email,
+      address: address
+    }
+    if (id) {
+      meetups.updateMeetup(id, meetupData)
+    } else {
+      meetups.addMeetup(meetupData)
+    }
+
+    dispatch('save') // to close modal
+  }
+
+  function deleteMeetup() {
+    meetups.deleteMeetup(id)
+    dispatch('save')
   }
 
   function cancel ()
@@ -99,7 +127,10 @@
       on:input={event => (description = event.target.value)} />
   </form>
   <div slot="footer">
-    <Button mode="outline" on:click={cancel}>Cancel</Button>
     <Button on:click={submitForm} disabled={!formIsValid}>Save</Button>
+    <Button mode="minimal" on:click={cancel}>Cancel</Button>
   </div>
+  {#if id}
+    <Button on:click={deleteMeetup}>Delete This Meetup</Button>
+  {/if}
 </Modal>
