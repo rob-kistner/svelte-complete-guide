@@ -24,12 +24,10 @@ const meetups = writable([
     contactEmail: 'swim@test.com',
     isFavorite: false
   }
-])
+]);
 
 const customMeetupsStore = {
-  
   subscribe: meetups.subscribe,
-  
   addMeetup: meetupData => {
     const newMeetup = {
       ...meetupData,
@@ -40,37 +38,30 @@ const customMeetupsStore = {
       return [newMeetup, ...items];
     });
   },
-
   updateMeetup: (id, meetupData) => {
     meetups.update(items => {
-      const meetupIndex = items.findIndex(i => i.id === id)
-      console.log({...items[meetupIndex], meetupData})
-        // need to spread both, which will overwrite the former individual
-        // values with the new values of the same name within an object
-      const updatedMeetup = {...items[meetupIndex], ...meetupData}
-      const updatedMeetups = [...items]
-      updatedMeetups[meetupIndex] = updatedMeetup
-      return updatedMeetups
-    })
+      const meetupIndex = items.findIndex(i => i.id === id);
+      const updatedMeetup = { ...items[meetupIndex], ...meetupData };
+      const updatedMeetups = [...items];
+      updatedMeetups[meetupIndex] = updatedMeetup;
+      return updatedMeetups;
+    });
   },
-  
-  deleteMeetup: (id) => {
-    meetups.update(items => {
-      return items.filter(i => i.id !== id)
-    })
+  removeMeetup: (id) => {
+      meetups.update(items => {
+        return items.filter(i => i.id !== id);
+      });
   },
-
   toggleFavorite: id => {
     meetups.update(items => {
-      const updatedMeetup = { ...items.find(m => m.id === id) }
-      updatedMeetup.isFavorite = !updatedMeetup.isFavorite
-      const meetupIndex = items.findIndex(m => m.id === id)
-      const updatedMeetups = [...items]
-      updatedMeetups[meetupIndex] = updatedMeetup
-      return updatedMeetups
-    })
+      const updatedMeetup = { ...items.find(m => m.id === id) };
+      updatedMeetup.isFavorite = !updatedMeetup.isFavorite;
+      const meetupIndex = items.findIndex(m => m.id === id);
+      const updatedMeetups = [...items];
+      updatedMeetups[meetupIndex] = updatedMeetup;
+      return updatedMeetups;
+    });
   }
+};
 
-}
-
-export default customMeetupsStore
+export default customMeetupsStore;

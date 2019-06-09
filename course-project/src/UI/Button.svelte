@@ -1,9 +1,9 @@
 <script>
-  export let type = "button"
-  export let href = null
-  export let mode = null
-  export let color = null
-  export let disabled = false
+  export let type = "button";
+  export let href = null;
+  export let mode = null;
+  export let color = null;
+  export let disabled = false;
 </script>
 
 <style>
@@ -82,38 +82,14 @@
   .outline.success:active {
     background: #c2ffd1;
   }
-
-  .minimal {
-    background: transparent;
-    color: #cf0056;
-    box-shadow: none;
-    border-color: transparent;
-  }
-
-  .minimal:hover,
-  .minimal:active {
-    background: #ffc7de;
-    box-shadow: none;
-    border-color: transparent;
-  }
-
-  .minimal:disabled,
-  .minimal:disabled:hover,
-  .minimal:disabled:active {
-    background: transparent;
-    color: #ccc;
-    border-color: transparent;
-  }
-
 </style>
-
 
 {#if href}
   <a {href}>
     <slot />
   </a>
 {:else}
-  <button class="{mode} {color}" {type} disabled={disabled} on:click>
+  <button class="{mode} {color}" {type} on:click {disabled}>
     <slot />
   </button>
 {/if}

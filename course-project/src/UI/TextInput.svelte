@@ -1,16 +1,15 @@
 <script>
-  export let controlType = null
-  export let id
-  export let label
-  export let rows = null
-  export let value
-  export let type = "text"
-  export let valid = true
-  export let validityMessage = ''
-  
-  let touched = false
-</script>
+  export let controlType = null;
+  export let id;
+  export let label;
+  export let rows = null;
+  export let value;
+  export let type = "text";
+  export let valid = true;
+  export let validityMessage = "";
 
+  let touched = false;
+</script>
 
 <style>
   input,
@@ -22,7 +21,7 @@
     border-bottom: 2px solid #ccc;
     border-radius: 3px 3px 0 0;
     background: white;
-    padding: 0.25rem 0.5rem;
+    padding: 0.15rem 0.25rem;
     transition: border-color 0.1s ease-out;
   }
 
@@ -46,7 +45,7 @@
 
   .invalid {
     border-color: red;
-    background-color: #fce2e2 !important;
+    background: #fde3e3;
   }
 
   .error-message {
@@ -55,13 +54,12 @@
   }
 </style>
 
-
 <div class="form-control">
   <label for={id}>{label}</label>
   {#if controlType === 'textarea'}
-    <textarea class:invalid={!valid && touched} {rows} {id} {value} on:input on:blur={()=>touched=true} />
+    <textarea class:invalid="{!valid && touched}" {rows} {id} bind:value on:blur={() => touched = true} />
   {:else}
-    <input class:invalid={!valid && touched} type={type} {id} {value} on:input on:blur={()=>touched=true} />
+    <input class:invalid="{!valid && touched}" {type} {id} {value} on:input on:blur={() => touched = true} />
   {/if}
   {#if validityMessage && !valid && touched}
     <p class="error-message">{validityMessage}</p>
