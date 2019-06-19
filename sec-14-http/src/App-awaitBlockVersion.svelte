@@ -7,43 +7,34 @@
   let hobbyInput
   let isLoading = false
 
-  /**
-   * This is the onMount version,
-   * there's also an #await block version, see
-   * the 2nd App-awaitBlockVersion.svelte file
-   * that shows the markup receiving the promise instead.
-   * That's fine for GETs but that version breaks the 
-   * POST used here
-   * 
-   * to be sure data loads right at the beginning,
-   * it's best to use onMount. Note import above,
-   * lifecycle methods must be imported
-   */ 
-  onMount(() => {
-    isLoading = true
-    // load current hobbies from firebase
-    fetch(HOBBIES_URL)
-      .then(res => {
-        if (!res.ok) throw new Error('Failed to GET')
-        return res.json() // returns a promise, move to next .then
-      })
-      // data received ok, process it
-      .then(data => {
-        isLoading = false
-        // get values only from key/value pairs into array
-        hobbies = Object.values(data)
-        let keys = Object.keys(data)
-        // for in loop to test
-        for (let key in data) {
-          console.log(key, data[key])
-        }
-      })
-      // print error info
-      .catch(err => {
-        isLoading = false
-        console.log(err)
-      })
-  })
+  // AWAIT version, uses await block below
+  // must store the fetch promise in a variable to
+  // use in html markup
+  
+  isLoading = true
+  // load current hobbies from firebase
+  let getHobbies = fetch(HOBBIES_URL)
+    .then(res => {
+      if (!res.ok) throw new Error('Failed to GET')
+      return res.json() // returns a promise, move to next .then
+    })
+    // data received ok, process it
+    .then(data => {
+      isLoading = false
+      // get values only from key/value pairs into array
+      hobbies = Object.values(data)
+      let keys = Object.keys(data)
+      // for in loop to test
+      for (let key in data) {
+        console.log(key, data[key])
+      }
+      return hobbies // necessary for #await "then" block in markup
+    })
+    // print error info
+    .catch(err => {
+      isLoading = false
+      console.log(err)
+    })
 
 
   function addHobby() {
@@ -84,7 +75,7 @@
 <input type="text" name="hobby" id="hobby" bind:this={hobbyInput}>
 <button on:click={addHobby}>Add Hobby</button>
 
-{#if isLoading}
+<!-- {#if isLoading}
   <p>Loading…</p>
 {:else}
   <ul>
@@ -92,5 +83,20 @@
       <li>{hobby}</li>
     {/each}
   </ul>
-{/if}
+{/if}-->
 
+<!--
+  Unfortunately this is mostly for GETs,
+  this approach breaks the POST portion
+-->
+{#await getHobbies}
+  <p>Loading…</p>
+{:then hobbyData}
+  <ul>
+    {#each hobbyData as hobby}
+      <li>{hobby}</li>
+    {/each}
+  </ul>
+{:catch error}
+  <p>{error.message}</p>
+{/await}
