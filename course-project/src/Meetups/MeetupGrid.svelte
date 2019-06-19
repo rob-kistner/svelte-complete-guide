@@ -47,7 +47,7 @@
 <section id="meetups">
 <!-- div wrapper below added for animate:flip on MeetupItem -->
   {#each filteredMeetups as meetup (meetup.id)}
-    <div transition:scale animate:flip={{duration: 250}}>
+    <div transition:scale={{start: 0.9}} animate:flip={{duration: 250}}>
       <MeetupItem
         id={meetup.id}
         title={meetup.title}
