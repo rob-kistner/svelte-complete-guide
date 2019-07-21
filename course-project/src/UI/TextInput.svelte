@@ -57,11 +57,28 @@
 <div class="form-control">
   <label for={id}>{label}</label>
   {#if controlType === 'textarea'}
-    <textarea class:invalid="{!valid && touched}" {rows} {id} bind:value on:blur={() => touched = true} />
+    <textarea
+      {id}
+      {rows}
+      class:invalid="{!valid && touched}"
+      autocomplete="false"
+      on:blur={() => touched = true}
+      bind:value
+      />
   {:else}
-    <input class:invalid="{!valid && touched}" {type} {id} {value} on:input on:blur={() => touched = true} />
+    <input
+      {type}
+      {id}
+      class:invalid="{!valid && touched}"
+      autocomplete="false"
+      on:input
+      on:blur={() => touched = true}
+      {value}
+      />
   {/if}
   {#if validityMessage && !valid && touched}
-    <p class="error-message">{validityMessage}</p>
+    <p class="error-message">
+      {validityMessage}
+    </p>
   {/if}
 </div>

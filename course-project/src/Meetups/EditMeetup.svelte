@@ -1,32 +1,33 @@
 <script>
-  import meetups from "./meetups-store.js";
-  import { createEventDispatcher } from "svelte";
-  import TextInput from "../UI/TextInput.svelte";
-  import Button from "../UI/Button.svelte";
-  import Modal from "../UI/Modal.svelte";
-  import { isEmpty, isValidEmail } from "../helpers/validation.js";
+  import meetups from "./meetups-store.js"
+  import { createEventDispatcher } from "svelte"
+  import TextInput from "../UI/TextInput.svelte"
+  import Button from "../UI/Button.svelte"
+  import Modal from "../UI/Modal.svelte"
+  import { isEmpty, isValidEmail } from "../helpers/validation.js"
 
-  export let id = null;
+  export let id = null
 
-  let title = "";
-  let subtitle = "";
-  let address = "";
-  let email = "";
-  let description = "";
-  let imageUrl = "";
+  let MEETUP_DATA_URL = "https://rk-svelte-course.firebaseio.com/meetups.json"
+  let title = ""
+  let subtitle = ""
+  let address = ""
+  let email = ""
+  let description = ""
+  let imageUrl = ""
 
   if (id) {
     const unsubscribe = meetups.subscribe(items => {
-      const selectedMeetup = items.find(i => i.id === id);
-      title = selectedMeetup.title;
-      subtitle = selectedMeetup.subtitle;
-      address = selectedMeetup.address;
-      email = selectedMeetup.contactEmail;
-      description = selectedMeetup.description;
-      imageUrl = selectedMeetup.imageUrl;
+      const selectedMeetup = items.find(i => i.id === id)
+      title = selectedMeetup.title
+      subtitle = selectedMeetup.subtitle
+      address = selectedMeetup.address
+      email = selectedMeetup.contactEmail
+      description = selectedMeetup.description
+      imageUrl = selectedMeetup.imageUrl
     });
 
-    unsubscribe();
+    unsubscribe()
   }
 
   const dispatch = createEventDispatcher();
@@ -59,7 +60,28 @@
     if (id) {
       meetups.updateMeetup(id, meetupData);
     } else {
-      meetups.addMeetup(meetupData);
+      fetch(MEETUP_DATA_URL, {
+        method: 'POST',
+        body: JSON.stringify({...meetupData, isFavorite: false}),
+        headers: { 'Content-Type': 'application/json' }
+      })
+        .then(res => {
+          if (!res.ok) {
+            throw new Error('An error occured, please try again')
+          }
+          return res.json()
+        })
+        .then(data => {
+          meetups.addMeetup({
+            ...meetupData,
+            isFavorite: false,
+            // data.name is the auto-generated id from firestore
+            id: data.name
+          });
+        })
+        .catch(err => {
+          console.log(err)
+        })
     }
     dispatch("save");
   }
