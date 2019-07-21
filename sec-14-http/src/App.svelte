@@ -1,5 +1,6 @@
 <script>
   import { onMount } from 'svelte'
+  import hobbyStore from './hobby-store.js'
 
   const HOBBIES_URL = 'https://rk-svelte-course.firebaseio.com/hobbies.json'
 
@@ -9,6 +10,7 @@
 
   /**
    * This is the onMount version,
+   *
    * there's also an #await block version, see
    * the 2nd App-awaitBlockVersion.svelte file
    * that shows the markup receiving the promise instead.
@@ -19,36 +21,34 @@
    * it's best to use onMount. Note import above,
    * lifecycle methods must be imported
    */ 
-  onMount(() => {
-    isLoading = true
-    // load current hobbies from firebase
-    fetch(HOBBIES_URL)
-      .then(res => {
-        if (!res.ok) throw new Error('Failed to GET')
-        return res.json() // returns a promise, move to next .then
-      })
-      // data received ok, process it
-      .then(data => {
-        isLoading = false
-        // get values only from key/value pairs into array
-        hobbies = Object.values(data)
-        let keys = Object.keys(data)
-        // for in loop to test
-        for (let key in data) {
-          console.log(key, data[key])
-        }
-      })
-      // print error info
-      .catch(err => {
-        isLoading = false
-        console.log(err)
-      })
-  })
-
+  isLoading = true
+  // load current hobbies from firebase
+  let getHobbies = fetch(HOBBIES_URL)
+    .then(res => {
+      if (!res.ok) throw new Error('Failed to GET')
+      return res.json() // returns a promise, move to next .then
+    })
+    // data received ok, process it
+    .then(data => {
+      isLoading = false
+      // get values only from key/value pairs into array and forward to the store
+      hobbyStore.setHobbies(Object.values(data))
+      let keys = Object.keys(data)
+      // for in loop to test
+      for (let key in data) {
+        console.log(key, data[key])
+      }
+    })
+    // print error info
+    .catch(err => {
+      isLoading = false
+      console.log(err)
+    })
 
   function addHobby() {
     // add to the hobbies array
-    hobbies = [...hobbies, hobbyInput.value]
+    // hobbies = [...hobbies, hobbyInput.value]
+    hobbyStore.addHobby(hobbyInput.value)
 
     isLoading = true
 
@@ -68,7 +68,8 @@
         if (!res.ok) { // should return 200, fetch see it as .ok, if not...
            throw new Error('Failed to POST') // moves to catch block if it's not ok
         }
-        // otherwise do nothing
+        // hobby added…
+        // res.json() => Promise with an object containing the id
       })
       .catch(err => {
         isLoading = false
@@ -88,7 +89,7 @@
   <p>Loading…</p>
 {:else}
   <ul>
-    {#each hobbies as hobby}
+    {#each $hobbyStore as hobby}
       <li>{hobby}</li>
     {/each}
   </ul>
