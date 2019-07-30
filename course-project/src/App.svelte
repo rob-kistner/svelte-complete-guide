@@ -1,21 +1,23 @@
 <script>
-  import meetups from "./Meetups/meetups-store.js";
-  import Header from "./UI/Header.svelte";
-  import MeetupGrid from "./Meetups/MeetupGrid.svelte";
-  import TextInput from "./UI/TextInput.svelte";
-  import Button from "./UI/Button.svelte";
-  import EditMeetup from "./Meetups/EditMeetup.svelte";
-  import MeetupDetail from "./Meetups/MeetupDetail.svelte";
-  import LoadingSpinner from "./UI/LoadingSpinner.svelte";
+  import meetups from "./Meetups/meetups-store.js"
+  import Header from "./UI/Header.svelte"
+  import MeetupGrid from "./Meetups/MeetupGrid.svelte"
+  import TextInput from "./UI/TextInput.svelte"
+  import Button from "./UI/Button.svelte"
+  import EditMeetup from "./Meetups/EditMeetup.svelte"
+  import MeetupDetail from "./Meetups/MeetupDetail.svelte"
+  import LoadingSpinner from "./UI/LoadingSpinner.svelte"
+  import Error from "./UI/Error.svelte"
 
   // let meetups = ;
 
   const MEETUP_DATA_URL = 'https://rk-svelte-course.firebaseio.com/meetups.json'
-  let editMode;
-  let editedId;
-  let page = "overview";
-  let pageData = {};
-  let isLoading = true;
+  let editMode
+  let editedId
+  let page = "overview"
+  let pageData = {}
+  let isLoading = true
+  let error
 
   fetch(MEETUP_DATA_URL)
     .then(res => {
@@ -34,10 +36,12 @@
       }
       setTimeout(() => {
         isLoading = false;
-        meetups.setMeetups(loadedMeetups);
+        // reverse() will load the meetups in chronological order
+        meetups.setMeetups(loadedMeetups.reverse());
       }, 1000);
     })
     .catch(err => {
+      error = err
       isLoading = false;
       console.log(err);
     });
@@ -66,6 +70,10 @@
     editMode = "edit";
     editedId = event.detail;
   }
+
+  function clearError() {
+    error = null
+  }
 </script>
 
 <style>
@@ -73,6 +81,11 @@
     margin-top: 5rem;
   }
 </style>
+
+{#if error}
+  <Error message={error.message} on:cancel={clearError}>
+  </Error>
+{/if}
 
 <Header />
 
