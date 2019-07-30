@@ -1,21 +1,21 @@
 <script>
-  import { createEventDispatcher } from "svelte"
-  import { scale } from "svelte/transition"
-  import { flip } from "svelte/animate"
-  import MeetupItem from "./MeetupItem.svelte"
-  import MeetupFilter from "./MeetupFilter.svelte"
-  import Button from "../UI/Button.svelte"
+  import { createEventDispatcher } from "svelte";
+  import { scale } from "svelte/transition";
+  import { flip } from "svelte/animate";
+  import MeetupItem from "./MeetupItem.svelte";
+  import MeetupFilter from "./MeetupFilter.svelte";
+  import Button from "../UI/Button.svelte";
 
-  export let meetups
+  export let meetups;
 
-  const dispatch = createEventDispatcher()
+  const dispatch = createEventDispatcher();
 
-  let favsOnly = false
+  let favsOnly = false;
 
-  $: filteredMeetups = favsOnly ? meetups.filter(m => m.isFavorite) : meetups
+  $: filteredMeetups = favsOnly ? meetups.filter(m => m.isFavorite) : meetups;
 
   function setFilter(event) {
-    favsOnly = event.detail === 1
+    favsOnly = event.detail === 1;
   }
 </script>
 
@@ -33,6 +33,10 @@
     justify-content: space-between;
   }
 
+  #no-meetups {
+    margin: 1rem;
+  }
+
   @media (min-width: 768px) {
     #meetups {
       grid-template-columns: repeat(2, 1fr);
@@ -44,10 +48,12 @@
   <MeetupFilter on:select={setFilter} />
   <Button on:click={() => dispatch('add')}>New Meetup</Button>
 </section>
+{#if filteredMeetups.length === 0}
+  <p id="no-meetups">No meetups found, you can start adding some.</p>
+{/if}
 <section id="meetups">
-<!-- div wrapper below added for animate:flip on MeetupItem -->
   {#each filteredMeetups as meetup (meetup.id)}
-    <div transition:scale={{start: 0.9}} animate:flip={{duration: 250}}>
+    <div transition:scale animate:flip={{ duration: 300 }}>
       <MeetupItem
         id={meetup.id}
         title={meetup.title}

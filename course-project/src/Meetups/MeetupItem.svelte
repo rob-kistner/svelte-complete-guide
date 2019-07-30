@@ -1,22 +1,37 @@
 <script>
-  import { createEventDispatcher } from "svelte"
-  import meetups from "./meetups-store.js"
-  import Button from "../UI/Button.svelte"
-  import Badge from "../UI/Badge.svelte"
+  import { createEventDispatcher } from "svelte";
+  import meetups from "./meetups-store.js";
+  import Button from "../UI/Button.svelte";
+  import Badge from "../UI/Badge.svelte";
 
-  export let id
-  export let title
-  export let subtitle
-  export let imageUrl
-  export let description
-  export let address
-  export let email
-  export let isFav
+  export let id;
+  export let title;
+  export let subtitle;
+  export let imageUrl;
+  export let description;
+  export let address;
+  export let email;
+  export let isFav;
 
-  const dispatch = createEventDispatcher()
+  const dispatch = createEventDispatcher();
 
   function toggleFavorite() {
-    meetups.toggleFavorite(id)
+    if (id) {
+      fetch(`https://rk-svelte-course.firebaseio.com/meetups/${id}.json`, {
+        method: "PATCH", 
+        body: JSON.stringify({isFavorite: !isFav}),
+        headers: { "Content-Type": "application/json" }
+      })
+        .then(res => {
+          if (!res.ok) {
+            throw new Error('An error occurred while updating Favorite toggling!')
+          }
+          meetups.toggleFavorite(id);
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    }
   }
 </script>
 

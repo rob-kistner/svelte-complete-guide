@@ -8,6 +8,7 @@
 
   export let id = null;
 
+  const MEETUP_DATA_URL = 'https://rk-svelte-course.firebaseio.com/meetups.json'
   let title = "";
   let subtitle = "";
   let address = "";
@@ -57,15 +58,63 @@
 
     // meetups.push(newMeetup); // DOES NOT WORK!
     if (id) {
-      meetups.updateMeetup(id, meetupData);
+      // url specific to the desired meetup id
+      fetch(`https://rk-svelte-course.firebaseio.com/meetups/${id}.json`, {
+        // overwrite data that we provide, leave the rest as is
+        method: "PATCH", 
+        // note: no ID key here so it's safe to use the meetupData
+        // to update the existing record via ID
+        body: JSON.stringify(meetupData),
+        headers: { "Content-Type": "application/json" }
+      })
+        .then(res => {
+          if (!res.ok) {
+            throw new Error('An error occurred while updating, please try again!')
+          }
+          meetups.updateMeetup(id, meetupData) // update locally in store
+        })
+        .catch(err => {
+          console.log(err)
+        })
     } else {
-      meetups.addMeetup(meetupData);
+      fetch(MEETUP_DATA_URL, {
+        method: "POST",
+        body: JSON.stringify({ ...meetupData, isFavorite: false }),
+        headers: { "Content-Type": "application/json" }
+      })
+        .then(res => {
+          if (!res.ok) {
+            throw new Error("An error occurred, please try again!");
+          }
+          return res.json();
+        })
+        .then(data => {
+          meetups.addMeetup({
+            ...meetupData,
+            isFavorite: false,
+            id: data.name
+          });
+        })
+        .catch(err => {
+          console.log(err);
+        });
     }
     dispatch("save");
   }
 
   function deleteMeetup() {
-    meetups.removeMeetup(id);
+    fetch(`https://rk-svelte-course.firebaseio.com/meetups/${id}.json`, {
+      method: "DELETE"
+    })
+      .then(res => {
+        if(!res.ok) {
+          console.log('An error occurred deleting the specified meeting.')
+        }
+        meetups.removeMeetup(id);
+      })
+      .catch(err => {
+        console.log(err)
+      })
     dispatch("save");
   }
 
